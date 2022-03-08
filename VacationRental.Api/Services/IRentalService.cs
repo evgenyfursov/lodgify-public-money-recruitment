@@ -9,7 +9,7 @@ public interface IRentalService
 
     RentalViewModel GetById(int id);
     
-    void Create(RentalViewModel model);
+    ResourceIdViewModel Create(RentalBindingModel model);
     
     bool IsExist(int id);
 }

@@ -23,9 +23,13 @@ public class RentalService : IRentalService
         return _rentalRepository.GetById(id);
     }
 
-    public void Create(RentalViewModel model)
+    public ResourceIdViewModel Create(RentalBindingModel model)
     {
-        _rentalRepository.Add(model);
+        var key = new ResourceIdViewModel { Id = GetAll().Count + 1 };
+
+        _rentalRepository.Add(new RentalViewModel(key.Id, model.Units, model.PreparationTimeInDays));
+
+        return key;
     }
 
     public bool IsExist(int id)

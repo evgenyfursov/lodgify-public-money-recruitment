@@ -4,55 +4,22 @@ using Microsoft.AspNetCore.Mvc;
 using VacationRental.Api.Models;
 using VacationRental.Api.Services;
 
-namespace VacationRental.Api.Controllers
+namespace VacationRental.Api.Controllers;
+
+[Route("api/v1/calendar")]
+[ApiController]
+public class CalendarController : ControllerBase
 {
-    [Route("api/v1/calendar")]
-    [ApiController]
-    public class CalendarController : ControllerBase
+    private readonly ICalendarService _calendarService;
+
+    public CalendarController(ICalendarService calendarService)
     {
-        private readonly IRentalService _rentalService;
-        private readonly IBookingService _bookingService;
+        _calendarService = calendarService;
+    }
 
-        public CalendarController(IRentalService rentalService, IBookingService bookingService)
-        {
-            _rentalService = rentalService;
-            _bookingService = bookingService;
-        }
-
-        [HttpGet]
-        public CalendarViewModel Get(int rentalId, DateTime start, int nights)
-        {
-            if (nights < 0)
-                throw new ApplicationException("Nights must be positive");
-            if (!_rentalService.IsExist(rentalId))
-                throw new ApplicationException("Rental not found");
-
-            var result = new CalendarViewModel 
-            {
-                RentalId = rentalId,
-                Dates = new List<CalendarDateViewModel>() 
-            };
-            for (var i = 0; i < nights; i++)
-            {
-                var date = new CalendarDateViewModel
-                {
-                    Date = start.Date.AddDays(i),
-                    Bookings = new List<CalendarBookingViewModel>()
-                };
-
-                foreach (var booking in _bookingService.GetAll())
-                {
-                    if (booking.RentalId == rentalId
-                        && booking.Start <= date.Date && booking.Start.AddDays(booking.Nights) > date.Date)
-                    {
-                        date.Bookings.Add(new CalendarBookingViewModel { Id = booking.Id });
-                    }
-                }
-
-                result.Dates.Add(date);
-            }
-
-            return result;
-        }
+    [HttpGet]
+    public CalendarViewModel Get(int rentalId, DateTime start, int nights)
+    {
+        return _calendarService.GetCalendar(rentalId, start, nights);
     }
 }

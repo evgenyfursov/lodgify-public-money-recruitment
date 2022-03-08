@@ -33,13 +33,7 @@ public class VacationRentalContext : IVacationRentalContext
 
     public void AddBooking(BookingViewModel model)
     {
-        _bookings.Add(model.Id, new BookingViewModel
-        {
-            Id = model.Id,
-            Nights = model.Nights,
-            RentalId = model.RentalId,
-            Start = model.Start.Date
-        });
+        _bookings.Add(model.Id, new BookingViewModel(model.Id, model.RentalId, model.Start.Date, model.Nights, model.Unit));
     }
     
     #endregion
@@ -66,11 +60,7 @@ public class VacationRentalContext : IVacationRentalContext
     
     public void AddRental(RentalViewModel model)
     {
-        _rentals.Add(model.Id, new RentalViewModel
-        {
-            Id = model.Id,
-            Units = model.Units
-        });
+        _rentals.Add(model.Id, new RentalViewModel(model.Id, model.Units, model.PreparationTimeInDays));
     }
     
     #endregion
